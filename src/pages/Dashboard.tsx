@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom' // Add this import
+import { useNavigate } from 'react-router-dom'
 import { DashboardLayout } from '../components/layout/DashboardLayout'
 import { useAuth } from '../hooks/useAuth'
 import { DatabaseTest } from '../components/common/DatabaseTest'
@@ -7,7 +7,7 @@ import { Button, Card, CardHeader, CardBody, Badge, Alert } from '../components/
 import type { User } from '../types/auth'
 
 export const Dashboard: React.FC = () => {
-  const navigate = useNavigate() // Add this hook
+  const navigate = useNavigate()
   const { 
     user, 
     logout, 
@@ -65,7 +65,7 @@ export const Dashboard: React.FC = () => {
                 </div>
                 <Button 
                   variant="secondary" 
-                  onClick={handleLogout} // Use enhanced logout
+                  onClick={handleLogout}
                   size="sm"
                 >
                   Logout
@@ -75,8 +75,6 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Rest of component remains the same... */}
-        
         {/* Phase 1 Completion Status */}
         <Alert variant="success">
           <div>
@@ -89,6 +87,117 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
         </Alert>
+
+        {/* Role-Specific Dashboard Navigation */}
+        <Card>
+          <CardHeader>
+            <h3 className="text-lg font-medium text-gray-900">
+              🎯 Role-Specific Dashboards
+            </h3>
+          </CardHeader>
+          <CardBody>
+            <p className="text-gray-600 mb-4">
+              Navigate to your role-specific dashboard for specialized features:
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Admin Dashboard */}
+              {isAdmin() && (
+                <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <span className="text-2xl">👑</span>
+                    <div>
+                      <h4 className="font-medium text-blue-900">Admin Dashboard</h4>
+                      <p className="text-xs text-blue-600">Full system control</p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="primary" 
+                    size="sm" 
+                    onClick={() => navigate('/admin')}
+                    className="w-full"
+                  >
+                    Go to Admin Dashboard
+                  </Button>
+                </div>
+              )}
+
+              {/* Dosen Dashboard */}
+              {(isDosen() || isAdmin()) && (
+                <div className="border border-green-200 rounded-lg p-4 bg-green-50">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <span className="text-2xl">👨‍🏫</span>
+                    <div>
+                      <h4 className="font-medium text-green-900">Dosen Dashboard</h4>
+                      <p className="text-xs text-green-600">Teaching & courses</p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="primary"
+                    size="sm" 
+                    onClick={() => navigate('/dosen')}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    Go to Dosen Dashboard
+                  </Button>
+                </div>
+              )}
+
+              {/* Laboran Dashboard */}
+              {(isLaboran() || isAdmin()) && (
+                <div className="border border-yellow-200 rounded-lg p-4 bg-yellow-50">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <span className="text-2xl">🔬</span>
+                    <div>
+                      <h4 className="font-medium text-yellow-900">Laboran Dashboard</h4>
+                      <p className="text-xs text-yellow-600">Lab & equipment</p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="primary" 
+                    size="sm" 
+                    onClick={() => navigate('/laboran')}
+                    className="w-full bg-yellow-600 hover:bg-yellow-700 text-white"
+                  >
+                    Go to Laboran Dashboard
+                  </Button>
+                </div>
+              )}
+
+              {/* Mahasiswa Dashboard */}
+              {(isMahasiswa() || isAdmin()) && (
+                <div className="border border-purple-200 rounded-lg p-4 bg-purple-50">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <span className="text-2xl">👩‍🎓</span>
+                    <div>
+                      <h4 className="font-medium text-purple-900">Mahasiswa Dashboard</h4>
+                      <p className="text-xs text-purple-600">Student portal</p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    onClick={() => navigate('/mahasiswa')}
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    Go to Mahasiswa Dashboard
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Access Summary */}
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+              <p className="text-sm text-gray-600">
+                <strong>Your Access Level:</strong> {safeUser?.role.toUpperCase()} - 
+                You can access {isAdmin() ? 'ALL dashboards' : 
+                isDosen() && !isAdmin() ? 'Dosen dashboard only' :
+                isLaboran() && !isAdmin() ? 'Laboran dashboard only' :
+                'Mahasiswa dashboard only'}
+              </p>
+            </div>
+          </CardBody>
+        </Card>
 
         {/* Basic Role Access Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

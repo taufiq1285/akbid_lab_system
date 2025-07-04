@@ -1,14 +1,16 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { Login } from '../pages/auth/Login'
-import { Dashboard } from '../pages/Dashboard'
-import { AdminDashboard } from '../pages/admin/AdminDashboard'
-import { DosenDashboard } from '../pages/dosen/DosenDashboard'
-import { LaboranDashboard } from '../pages/laboran/LaboranDashboard'
-import { MahasiswaDashboard } from '../pages/mahasiswa/MahasiswaDashboard'
-import { AuthGuard } from '../components/guards/AuthGuard'
-import { RoleGuard } from '../components/guards/RoleGuard'
-import { useAuth } from '../hooks/useAuth'
+import { Login } from '@/pages/auth/Login'
+import { Dashboard } from '@/pages/Dashboard'
+import { AdminDashboard } from '@/pages/admin/AdminDashboard'
+import { DosenDashboard } from '@/pages/dosen/DosenDashboard'
+import { LaboranDashboard } from '@/pages/laboran/LaboranDashboard'
+import { MahasiswaDashboard } from '@/pages/mahasiswa/MahasiswaDashboard'
+import { Unauthorized } from '@/pages/shared/Unauthorized'
+import { NotFound } from '@/pages/shared/NotFound'
+import { AuthGuard } from '@/components/guards/AuthGuard'
+import { RoleGuard } from '@/components/guards/RoleGuard'
+import { useAuth } from '@/hooks/useAuth'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -42,7 +44,7 @@ export const AppRouter: React.FC = () => {
           } 
         />
         
-        {/* Protected Routes - Basic Dashboard */}
+        {/* Protected Routes - General Dashboard */}
         <Route 
           path="/dashboard" 
           element={
@@ -96,10 +98,16 @@ export const AppRouter: React.FC = () => {
             </ProtectedRoute>
           } 
         />
+
+        {/* Error Pages */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/404" element={<NotFound />} />
         
         {/* Default Redirects */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        
+        {/* Catch all - 404 Not Found */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )
